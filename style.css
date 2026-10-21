@@ -1,0 +1,66 @@
+/* Layout : une invitation verticale, puis la liste des envies en cartes papier sur fond blush. Thème unique (invitation de fête), couleurs explicites. */
+:root{
+  color-scheme: light;
+  --blush:#FBE9E1;
+  --paper:#FFF7F3;
+  --pink:#F6B8CB;
+  --fuchsia:#C8174F;
+  --orange:#EE7A1F;
+  --ink:#4A1A2A;
+  --muted:#8C5A66;
+  --line:#EFCFD3;
+  --ok:#2F7D5B;
+  --f-script:"Yellowtail","Brush Script MT",cursive;
+  --f-caps:"Cinzel","Trajan Pro",Georgia,serif;
+  --f-body:"Jost","Helvetica Neue",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+body{background:var(--blush);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 56px;
+  background-image:radial-gradient(circle at 15% 8%,rgba(238,122,31,.12),transparent 40%),radial-gradient(circle at 90% 20%,rgba(200,23,79,.10),transparent 45%)}
+.wrap{max-width:640px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+
+header{text-align:center;display:flex;flex-direction:column;align-items:center;gap:4px;padding-top:8px}
+.eyebrow{font-family:var(--f-caps);letter-spacing:.18em;font-size:13px;color:var(--fuchsia);font-weight:600}
+h1{font-family:var(--f-script);font-weight:400;color:var(--fuchsia);font-size:clamp(56px,16vw,92px);line-height:.95;margin:6px 0 0;text-wrap:balance}
+.age{position:relative;font-family:var(--f-script);color:var(--orange);font-size:clamp(34px,9vw,48px);padding:0 28px;margin-top:2px}
+.age::before{content:"";position:absolute;inset:18% -6px 12%;background:var(--pink);opacity:.55;border-radius:40% 12% 38% 10%/60% 20% 50% 20%;transform:rotate(-2deg);z-index:-1}
+.age{isolation:isolate}
+.date{font-family:var(--f-caps);font-size:15px;letter-spacing:.08em;margin-top:10px;font-weight:600}
+.date span{display:block;font-size:12px;letter-spacing:.16em;color:var(--muted);font-weight:500}
+
+.intro{background:var(--paper);border:1px solid var(--line);border-radius:4px;padding:18px 20px;text-align:center;color:var(--muted);font-size:15px}
+.intro strong{color:var(--ink);font-weight:500}
+.draft{border:1px dashed var(--orange);color:#9A4A0E;background:#FFF1E4;border-radius:4px;padding:10px 14px;font-size:14px;text-align:center}
+
+.list{display:flex;flex-direction:column;gap:14px;list-style:none;margin:0;padding:0}
+.gift{background:var(--paper);border:1px solid var(--line);border-radius:4px;padding:18px 20px;display:grid;grid-template-columns:1fr auto;gap:6px 16px;align-items:start}
+.gift > div{min-width:0}
+.gift.has-img{grid-template-columns:112px 1fr}
+.thumb{width:112px;aspect-ratio:1;max-width:100%;object-fit:cover;border-radius:3px;background:#fff;border:1px solid var(--line)}
+.gift h2{font-family:var(--f-body);font-weight:600;font-size:18px;margin:0;text-wrap:balance}
+.gift p{margin:2px 0 0;color:var(--muted);font-size:15px}
+.meta{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px}
+.price{font-variant-numeric:tabular-nums;font-size:16px;color:var(--fuchsia);font-weight:600}
+.chip{font-size:11px;letter-spacing:.12em;text-transform:uppercase;padding:2px 8px;border-radius:999px;background:#FFE3CC;color:#9A4A0E;font-weight:600}
+.link{font-size:14px;color:var(--fuchsia);text-decoration:underline;text-underline-offset:3px}
+.heart{width:30px;height:30px;color:var(--fuchsia)}
+.gift.taken{opacity:.62}
+.gift.taken h2{text-decoration:line-through;text-decoration-color:var(--orange)}
+
+.actions{grid-column:1/-1;display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:8px;padding-top:12px;border-top:1px dashed var(--line)}
+button{font:inherit;font-size:14px;font-weight:600;letter-spacing:.04em;border-radius:999px;padding:8px 16px;cursor:pointer;border:1.5px solid var(--fuchsia);background:var(--fuchsia);color:#fff}
+button.ghost{background:transparent;color:var(--fuchsia)}
+button:disabled{opacity:.5;cursor:default}
+button:focus-visible,a:focus-visible{outline:2px solid var(--orange);outline-offset:3px}
+.status{font-size:14px;color:var(--muted)}
+.status.mine{color:var(--ok);font-weight:500}
+
+footer{text-align:center;display:flex;flex-direction:column;gap:6px;align-items:center}
+.sign{font-family:var(--f-script);color:var(--fuchsia);font-size:34px}
+.small{font-size:13px;color:var(--muted);max-width:44ch}
+@media (prefers-reduced-motion:no-preference){.gift{transition:opacity .2s}}
+
+.banner{background:#E6F4EC;border:1px solid #B7DEC8;color:#1F5C41;border-radius:4px;padding:12px 16px;text-align:center;font-size:15px}
+.banner.err{background:#FFF1E4;border-color:var(--orange);color:#9A4A0E}
+.status.taken-msg{color:var(--fuchsia);font-weight:500}

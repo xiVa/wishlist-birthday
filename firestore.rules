@@ -1,0 +1,17 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Réservations : lisibles par tous, créables UNE seule fois (pas de modif, pas de suppression depuis le site).
+    match /reservations/{giftId} {
+      allow read: if true;
+      allow create: if giftId in [
+          'rituals-avent','sephora-avent','typology-avent',
+          'new-balance','pinceaux-sephora','diagnostic-peau'
+        ]
+        && request.resource.data.keys().hasOnly(['reserved','at'])
+        && request.resource.data.reserved == true;
+      allow update, delete: if false;
+    }
+    match /{document=**} { allow read, write: if false; }
+  }
+}

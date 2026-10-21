@@ -1,3 +1,4 @@
+// Config publique de l'app web Firebase (non secrète). La securite vient des regles Firestore.
 export const firebaseConfig = {
   apiKey: "AIzaSyDN8NHjmLH1HLRep8bWXtaMUgHhcKOqFbc",
   authDomain: "wishlist-birthday-f8ce2.firebaseapp.com",

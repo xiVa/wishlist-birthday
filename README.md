@@ -1,19 +1,28 @@
-# Wish List — mise en ligne
+# Wish List — version sans e-mail (Netlify statique + Firestore)
 
-## 1. Créer le projet Firebase
-1. https://console.firebase.google.com → **Ajouter un projet** → nom (ex. `wishlist-fanny`) → Google Analytics : désactivable → Créer.
-2. **Build > Firestore Database > Créer une base de données** → édition Standard → région `eur3 (europe-west)` ou `europe-west9 (Paris)` → mode **production** → Activer.
-3. **Onglet Règles** : remplace tout par le contenu de `firestore.rules` → **Publier**.
-4. **Paramètres du projet (roue dentée) > Général > Vos applications > icône `</>` (Web)** → nom → Enregistrer l'application (ne pas cocher Firebase Hosting).
-5. Copie l'objet `firebaseConfig` affiché et colle ses valeurs dans `firebase-config.js`.
+Aucun serveur : un simple dossier à glisser-déposer sur Netlify.
 
-## 2. Publier sur Netlify
-- Netlify > **Add new site > Deploy manually** → glisse-dépose tout le dossier (ou le zip dézippé).
-- Optionnel : *Site configuration > Change site name* pour une URL propre.
+- L'invité saisit "Prénom Nom" pour réserver. Le cadeau devient "déjà réservé" pour tout le monde.
+- Le nom n'est jamais enregistré en clair : seulement une empreinte (SHA-256) dans une collection `private` illisible depuis le site.
+- Pour annuler, il faut retaper le même prénom et nom (accents, majuscules et ordre des mots sans importance). Les règles Firestore vérifient.
 
-## 3. Tester
-Ouvre le site, réserve un cadeau, recharge, puis ouvre-le sur un autre navigateur : le message « déjà réservé » doit s'afficher.
+## 1. Firestore > Règles
+Colle le contenu de `firestore.rules` (vider l'éditeur avec Ctrl+A / Suppr avant) puis **Publier**.
+Attention : onglet Firestore Database (pas Realtime Database).
 
-## Gérer les réservations
-- Voir / annuler une réservation : Firebase > Firestore > collection `reservations` > supprimer le document du cadeau (à éviter de consulter pour garder la surprise).
-- Nouveau cadeau : ajouter une entrée dans `wishes.js` ET son `id` dans la liste de `firestore.rules` (puis re-publier les règles).
+## 2. firebase-config.js
+Déjà rempli avec ta config. (Pas d'`import`, juste `export const firebaseConfig = {...}`.)
+
+## 3. Netlify
+Add new site > Deploy manually > glisse le dossier complet.
+
+## 4. Tester (important)
+1. Réserve un cadeau avec "Test Utilisateur" -> message de confirmation, le cadeau passe "réservé".
+2. Ouvre le site dans une fenêtre privée : le cadeau est "déjà réservé", sans bouton "Je l'offre".
+3. "Annuler ma réservation" avec un MAUVAIS nom -> refusé. Avec "utilisateur test" -> annulé.
+4. Si les réservations échouent avec une erreur : ouvre la console du navigateur (F12) et regarde si c'est "permission-denied" (règles non publiées ou mal collées).
+
+## Notes
+- Nouveau cadeau : ajoute-le dans `wishes.js` ET son id dans la liste `validGift` de `firestore.rules` (puis republie les règles).
+- Libérer un cadeau à la main : Firestore > supprime `reservations/<id>` (le document `private/<id>` peut rester).
+- Si un invité oublie son nom saisi : tu supprimes `reservations/<id>` dans la console.

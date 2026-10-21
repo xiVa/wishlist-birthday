@@ -22,6 +22,8 @@ async function nameHash(s){
   return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2,"0")).join("");
 }
 
+let gifts = WISHES;            // liste affichée : celle de Firestore si elle existe, sinon wishes.js
+let giftsReady = false;
 let reserved = new Set();      // ids réservés (lus en direct depuis Firestore)
 let ready = false, failed = false;
 let open = null;               // {id, mode:"reserve"|"cancel"} formulaire ouvert
@@ -47,15 +49,16 @@ function buildForm(w){
   const no = el("button","ghost","Fermer"); no.type="button"; no.onclick = () => { open=null; render(); };
   row.append(ok,no);
   f.append(lab,input,row);
-  if(mode==="reserve") f.appendChild(el("p","hint","Écris ton prénom puis ton nom, par exemple « Fanny Begros ». ⚠️ Si tu veux annuler plus tard, il faudra retaper exactement le même prénom et nom (majuscules et accents sans importance). Ton nom n'est pas affiché et n'est pas enregistré en clair."));
-  else f.appendChild(el("p","hint","Saisis le même prénom et nom que lors de la réservation, par exemple « Fanny Begros »."));
+  if(mode==="reserve") f.appendChild(el("p","hint","Écris ton prénom puis ton nom, par exemple « Marie Dupont ». ⚠️ Si tu veux annuler plus tard, il faudra retaper exactement le même prénom et nom (majuscules et accents sans importance). Ton nom n'est pas affiché et n'est pas enregistré en clair."));
+  else f.appendChild(el("p","hint","Saisis le même prénom et nom que lors de la réservation, par exemple « Marie Dupont »."));
   f.onsubmit = (e) => { e.preventDefault(); submit(w, mode); };
   return f;
 }
 
 function render(){
   listEl.textContent = "";
-  for(const w of WISHES){
+  if(!giftsReady){ const li = el("li","gift"); li.appendChild(el("span","status","Chargement de la liste…")); listEl.appendChild(li); return; }
+  for(const w of gifts){
     const isTaken = reserved.has(w.id);
     const li = el("li", "gift"+(w.img?" has-img":"")+(isTaken && !w.multi && !mine.has(w.id) ? " taken":""));
     if(w.img){ const im=el("img","thumb"); im.src=w.img; im.alt=w.title; im.loading="lazy"; li.appendChild(im); }
@@ -99,7 +102,7 @@ function render(){
 
 async function submit(w, mode){
   const name = draft.trim();
-  if(nameTokens(name).length < 2){ banner("Merci d'indiquer ton prénom ET ton nom, par exemple « Fanny Begros ».", true); return; }
+  if(nameTokens(name).length < 2){ banner("Merci d'indiquer ton prénom ET ton nom, par exemple « Marie Dupont ».", true); return; }
   busy = true; render();
   try{
     const h = await nameHash(name);
@@ -143,6 +146,12 @@ render();
 let db;
 try{
   db = getFirestore(initializeApp(firebaseConfig));
+  onSnapshot(collection(db, "gifts"), snap => {
+    // Liste gérée depuis admin.html ; tant qu'elle est vide, on garde celle de wishes.js.
+    const live = snap.docs.map(d => ({ id:d.id, ...d.data() })).sort((a,b) => (a.order||0)-(b.order||0));
+    gifts = live.length ? live : WISHES;
+    giftsReady = true; render();
+  }, err => { console.error(err); gifts = WISHES; giftsReady = true; render(); });
   onSnapshot(collection(db, "reservations"), snap => {
     reserved = new Set(snap.docs.map(d => d.id));
     ready = true; failed = false; render();
@@ -151,6 +160,6 @@ try{
     noteEl.textContent = "Impossible de charger les réservations.";
   });
 }catch(e){
-  console.error(e); failed = true; ready = true; render();
+  console.error(e); failed = true; ready = true; giftsReady = true; render();
   noteEl.textContent = "Configuration Firebase invalide (voir firebase-config.js).";
 }

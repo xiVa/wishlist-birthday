@@ -72,3 +72,23 @@ footer{text-align:center;display:flex;flex-direction:column;gap:6px;align-items:
 .form .row{display:flex;gap:8px;flex-wrap:wrap}
 .form .hint{font-size:13px;color:var(--muted);margin:0}
 .linkbtn{background:none;border:0;padding:0;font:inherit;font-size:13px;font-weight:500;letter-spacing:0;color:var(--muted);text-decoration:underline;text-underline-offset:3px;cursor:pointer;border-radius:0}
+
+/* Page admin */
+.panel{background:var(--paper);border:1px solid var(--line);border-radius:4px;padding:18px 20px;display:flex;flex-direction:column;gap:10px;margin-bottom:18px}
+.panel h2{font-family:var(--f-caps);letter-spacing:.08em;font-size:15px;color:var(--fuchsia);margin:0}
+.hint{font-size:14px;color:var(--muted);margin:0}
+.check{display:flex;gap:8px;align-items:flex-start;font-size:14px;color:var(--ink)}
+.check input{width:auto;margin-top:4px}
+.preview{display:flex;align-items:center;gap:12px}
+.preview img{width:84px;height:84px;object-fit:cover;border-radius:3px;border:1px solid var(--line);background:#fff}
+.count{font-family:var(--f-body);letter-spacing:0;color:var(--muted);font-size:13px;font-weight:500}
+.adminlist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.adminitem{display:grid;grid-template-columns:56px 1fr;gap:10px 12px;align-items:center;padding:10px 0;border-top:1px dashed var(--line)}
+.adminitem:first-child{border-top:0}
+.adminitem img,.adminitem .noimg{width:56px;height:56px;object-fit:cover;border-radius:3px;border:1px solid var(--line);background:#fff;display:flex;align-items:center;justify-content:center;color:var(--fuchsia)}
+.adminitem .noimg svg{width:24px;height:24px}
+.adminitem .t{font-weight:600;font-size:15px;min-width:0;overflow-wrap:anywhere}
+.adminitem .s{font-size:13px;color:var(--muted)}
+.adminitem .btns{grid-column:1/-1;display:flex;gap:6px;flex-wrap:wrap}
+.adminitem .btns button{font-size:13px;padding:5px 12px}
+.adminitem .btns .danger{border-color:#B3261E;color:#B3261E}

@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Gérer ma wish list</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Yellowtail&family=Cinzel:wght@500;600&family=Jost:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">ESPACE PERSONNEL</div>
+    <h1 style="font-size:clamp(44px,12vw,68px)">Ma liste</h1>
+    <a class="link" href="index.html">← Voir la wish list publique</a>
+  </header>
+
+  <div class="banner" id="banner" role="status" hidden></div>
+
+  <!-- Connexion -->
+  <section class="panel" id="loginPanel" hidden>
+    <h2>Connexion</h2>
+    <form class="form" id="loginForm" novalidate>
+      <label for="email">E-mail</label>
+      <input id="email" type="email" autocomplete="username" required>
+      <label for="password">Mot de passe</label>
+      <input id="password" type="password" autocomplete="current-password" required>
+      <div class="row"><button type="submit">Se connecter</button></div>
+    </form>
+  </section>
+
+  <!-- Espace connecté -->
+  <div id="adminArea" hidden>
+    <section class="panel" id="importPanel" hidden>
+      <h2>Première fois ?</h2>
+      <p class="hint">Ta liste en ligne est encore celle du site. Importe-la ici pour pouvoir la modifier depuis cette page (les cadeaux déjà réservés restent réservés).</p>
+      <div class="row">
+        <button type="button" id="importBtn">Importer mes cadeaux actuels</button>
+        <button type="button" class="ghost" id="emptyBtn">Partir d'une liste vide</button>
+      </div>
+    </section>
+
+    <section class="panel" id="formPanel" hidden>
+      <h2 id="formTitle">Ajouter un cadeau</h2>
+      <form class="form" id="giftForm" novalidate>
+        <label for="title">Nom du cadeau *</label>
+        <input id="title" maxlength="80" required placeholder="Ex. : Parfum Libre, 50 ml">
+
+        <label for="note">Précision (taille, couleur, édition…)</label>
+        <input id="note" maxlength="160" placeholder="Ex. : Pointure 38, coloris noir">
+
+        <label for="price">Prix</label>
+        <input id="price" maxlength="40" placeholder="Ex. : 59,90 €">
+
+        <label for="link">Lien vers le produit</label>
+        <input id="link" type="url" inputmode="url" maxlength="500" placeholder="https://…">
+
+        <label for="photo">Photo (optionnel)</label>
+        <input id="photo" type="file" accept="image/*">
+        <div class="preview" id="preview" hidden>
+          <img id="previewImg" alt="">
+          <button type="button" class="ghost" id="removePhoto">Retirer la photo</button>
+        </div>
+
+        <label class="check"><input id="multi" type="checkbox"> Carte cadeau / plusieurs personnes peuvent participer (non réservable)</label>
+
+        <div class="row">
+          <button type="submit" id="saveBtn">Ajouter à la liste</button>
+          <button type="button" class="ghost" id="cancelEdit" hidden>Annuler la modification</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="panel" id="listPanel" hidden>
+      <h2>Mes cadeaux <span class="count" id="count"></span></h2>
+      <ul class="adminlist" id="adminList"></ul>
+    </section>
+
+    <div class="small"><button type="button" class="linkbtn" id="logout">Se déconnecter</button></div>
+  </div>
+</div>
+<script type="module" src="admin.js"></script>
+</body>
+</html>

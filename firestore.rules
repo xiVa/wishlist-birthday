@@ -2,23 +2,32 @@ rules_version = "2";
 service cloud.firestore {
   match /databases/{database}/documents {
 
+    // >>> Remplace par TON e-mail de connexion admin (celui cree dans Authentication) <<<
+    function isOwner() {
+      return request.auth != null && request.auth.token.email == jbarondf65@gmail.com;
+    }
+
+    // Un cadeau est reservable s'il existe dans la liste (admin) ou dans la liste d'origine.
     function validGift(id) {
-      return id in ["rituals-avent","sephora-avent","typology-avent","new-balance","pinceaux-sephora","diagnostic-peau"];
+      return exists(/databases/$(database)/documents/gifts/$(id))
+        || id in ["rituals-avent","sephora-avent","typology-avent","new-balance","pinceaux-sephora","diagnostic-peau"];
+    }
+
+    // Liste des cadeaux : lisible par tous, modifiable uniquement par toi.
+    match /gifts/{giftId} {
+      allow read: if true;
+      allow write: if isOwner();
     }
 
     // Public : seulement "ce cadeau est reserve". Aucun nom.
     match /reservations/{giftId} {
       allow read: if true;
 
-      // Reserver : le document public ne peut etre cree que si, dans le meme lot,
-      // le document prive recoit une empreinte neuve (et aucune "proof").
       allow create: if validGift(giftId)
         && request.resource.data.keys().hasOnly(["reserved","at"])
         && request.resource.data.reserved == true
         && getAfter(/databases/$(database)/documents/private/$(giftId)).data.keys().hasOnly(["nameHash"]);
 
-      // Annuler : possible seulement si, dans le meme lot, le document prive recoit une "proof"
-      // egale a l'empreinte enregistree (= la personne a retape le meme nom).
       allow delete: if validGift(giftId)
         && getAfter(/databases/$(database)/documents/private/$(giftId)).data.proof
            == get(/databases/$(database)/documents/private/$(giftId)).data.nameHash;
@@ -26,25 +35,22 @@ service cloud.firestore {
       allow update: if false;
     }
 
-    // Prive : jamais lisible depuis le site (ni par toi dans l'appli, seulement dans la console).
+    // Prive : jamais lisible depuis le site.
     match /private/{giftId} {
       allow read: if false;
       allow delete: if false;
 
-      // Premiere reservation de ce cadeau.
       allow create: if validGift(giftId)
         && request.resource.data.keys().hasOnly(["nameHash"])
         && request.resource.data.nameHash is string
         && request.resource.data.nameHash.size() == 64;
 
       allow update: if validGift(giftId) && (
-        // Nouvelle reservation apres une annulation : on remplace l'empreinte (seulement si libre).
         ( !exists(/databases/$(database)/documents/reservations/$(giftId))
           && request.resource.data.keys().hasOnly(["nameHash"])
           && request.resource.data.nameHash is string
           && request.resource.data.nameHash.size() == 64 )
         ||
-        // Annulation : la preuve doit etre identique a l'empreinte deja enregistree.
         ( exists(/databases/$(database)/documents/reservations/$(giftId))
           && request.resource.data.keys().hasOnly(["nameHash","proof"])
           && request.resource.data.nameHash == resource.data.nameHash

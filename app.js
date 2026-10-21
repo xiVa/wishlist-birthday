@@ -47,8 +47,8 @@ function buildForm(w){
   const no = el("button","ghost","Fermer"); no.type="button"; no.onclick = () => { open=null; render(); };
   row.append(ok,no);
   f.append(lab,input,row);
-  if(mode==="reserve") f.appendChild(el("p","hint","Écris ton prénom puis ton nom, par exemple « Marie Dupont ». ⚠️ Si tu veux annuler plus tard, il faudra retaper exactement le même prénom et nom (majuscules et accents sans importance). Ton nom n'est pas affiché et n'est pas enregistré en clair."));
-  else f.appendChild(el("p","hint","Saisis le même prénom et nom que lors de la réservation, par exemple « Marie Dupont »."));
+  if(mode==="reserve") f.appendChild(el("p","hint","Écris ton prénom puis ton nom, par exemple « Fanny Begros ». ⚠️ Si tu veux annuler plus tard, il faudra retaper exactement le même prénom et nom (majuscules et accents sans importance). Ton nom n'est pas affiché et n'est pas enregistré en clair."));
+  else f.appendChild(el("p","hint","Saisis le même prénom et nom que lors de la réservation, par exemple « Fanny Begros »."));
   f.onsubmit = (e) => { e.preventDefault(); submit(w, mode); };
   return f;
 }
@@ -99,7 +99,7 @@ function render(){
 
 async function submit(w, mode){
   const name = draft.trim();
-  if(nameTokens(name).length < 2){ banner("Merci d'indiquer ton prénom ET ton nom, par exemple « Marie Dupont ».", true); return; }
+  if(nameTokens(name).length < 2){ banner("Merci d'indiquer ton prénom ET ton nom, par exemple « Fanny Begros ».", true); return; }
   busy = true; render();
   try{
     const h = await nameHash(name);
